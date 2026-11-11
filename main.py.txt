@@ -1,0 +1,47 @@
+import telebot
+import os
+
+# ⚠️ Вставьте ваш токен из @BotFather между кавычками
+API_TOKEN = '9020990827:AAFhD4T3TRsqVRaY2r7MF13kunzN9THS9uo'
+bot = telebot.TeleBot(API_TOKEN)
+
+ADMIN_ID = 767725724  
+QR_FILE_NAME = 'sber_qr.png.JPG'
+
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    card_number = "`2202 2050 1914 4481`"
+    recipient_name = "Саида"
+
+    welcome_text = (
+        "👋 Здравствуйте!\n\n"
+        "Для оплаты отсканируйте QR-код ниже через приложение вашего банка.\n\n"
+        "📱 **Если вы с телефона:** просто нажмите на номер карты ниже — он автоматически скопируется. Вставьте его в Сбербанк Онлайн:\n\n"
+        f"💳 **Номер карты:** {card_number}\n"
+        f"👤 **Получатель:** {recipient_name}\n\n"
+        "⚠️ **Важно:** После перевода обязательно **пришлите сюда скриншот чека**, "
+        "чтобы мы подтвердили ваш платеж."
+    )
+
+    if os.path.exists(QR_FILE_NAME):
+        with open(QR_FILE_NAME, 'rb') as photo:
+            bot.send_photo(message.chat.id, photo, caption=welcome_text, parse_mode='Markdown')
+    else:
+        bot.reply_to(message, f"Ошибка: Файл {QR_FILE_NAME} не найден!")
+
+@bot.message_handler(content_types=['photo', 'document', 'text'])
+def forward_to_admin(message):
+    username = f"@{message.from_user.username}" if message.from_user.username else "нет юзернейма"
+    user_info = (
+        f"📩 **Новый чек или сообщение от пользователя:**\n"
+        f"👤 Имя: {message.from_user.first_name}\n"
+        f"🔗 Ссылка: {username}\n"
+        f"🆔 ID клиента: `{message.from_user.id}`"
+    )
+    bot.send_message(ADMIN_ID, user_info, parse_mode='Markdown')
+    bot.forward_message(ADMIN_ID, message.chat.id, message.message_id)
+    bot.reply_to(message, "✨ Спасибо! Ваш чек отправлен администратору на проверку. Мы скоро свяжемся с вами.")
+
+if __name__ == '__main__':
+    print("Бот успешно запущен на Amvera без прокси!")
+    bot.infinity_polling()
