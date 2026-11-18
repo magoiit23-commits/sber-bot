@@ -2,7 +2,8 @@ import telebot
 import os
 
 # ⚠️ Вставьте ваш токен из @BotFather между кавычками
-API_TOKEN = '9020990827:AAGd5SIKarZDS4QRQ94fTK4iBOtZuAXQwPU'
+API_TOKEN = os.getenv('BOT_TOKEN')
+
 bot = telebot.TeleBot(API_TOKEN)
 
 ADMIN_ID = 767725724  
