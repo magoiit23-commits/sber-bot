@@ -6,7 +6,8 @@ API_TOKEN = '9020990827:AAFhD4T3TRsqVRaY2r7MF13kunzN9THS9uo'
 bot = telebot.TeleBot(API_TOKEN)
 
 ADMIN_ID = 767725724  
-QR_FILE_NAME = 'sber_qr.png.jpg'
+QR_FILE_NAME = 'qr.jpg'
+
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
